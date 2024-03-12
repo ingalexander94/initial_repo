@@ -1,0 +1,61 @@
+section.content_information {
+  display: grid;
+  gap: 15px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+section.content_information div h3 {
+  border-bottom: 1px solid var(--disabled-color);
+  text-align: center;
+  color: var(--boder-color);
+  padding-bottom: 10px;
+}
+
+section.content_information div form {
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+section.content_information div form div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+section.content_information div form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+section.content_information div form div label {
+  display: flex;
+  margin-bottom: 5px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+section.content_information div form div input {
+  font-size: 14px;
+}
+
+section.content_information div form div input:hover {
+  border-color: var(--hover-red-color);
+}
+
+section.content_information div form div input {
+  border: 1px solid var(--disabled-color);
+  height: 35px;
+}
+
+@media (max-width: 1500px) {
+  section.content_information {
+    display: grid;
+    gap: 15px;
+    overflow: hidden;
+    overflow-y: scroll;
+    height: 80%;
+  }
+}
