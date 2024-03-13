@@ -1,4 +1,11 @@
-import { ChangeEvent, useState, MouseEvent, useRef, useContext } from "react";
+import {
+  ChangeEvent,
+  useState,
+  MouseEvent,
+  useRef,
+  useContext,
+  useEffect,
+} from "react";
 import ListContentTable from "../ListContent";
 import { Link } from "react-router-dom";
 import { privateRoutes } from "src/models";
@@ -11,17 +18,40 @@ import searchIcon from "src/assets/icons/search.svg";
 import styles from "./listoftechnician.module.css";
 import { debounce } from "lodash";
 import { EquipmentContext } from "src/context/equipment";
+import { TeamFilter } from "src/interfaces";
 
 const ListEquipments = () => {
   const [search, setText] = useState<string>("");
   const { callEndpoint } = useAxios();
-  const { setSearch } = useContext(EquipmentContext);
+  const { setSearch, setTeam, equipmentState } = useContext(EquipmentContext);
+  const [teams, setTeams] = useState<TeamFilter[]>([]);
+
+  const isInitialized = useRef<boolean>(false);
 
   const debouncedValidate = useRef(
     debounce(async (text: string) => {
       setSearch(text);
     }, 1000)
   );
+
+  useEffect(() => {
+    if (!isInitialized.current) {
+      isInitialized.current = true;
+      getTeams();
+    }
+    return () => {};
+  }, []);
+
+  const getTeams = async () => {
+    const res = await callEndpoint(EquipmentService.getTeams());
+    if (res) {
+      const { data } = res.data;
+      setTeams(data);
+      if (data.length) {
+        setTeam(data[0].id_team);
+      }
+    }
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let searchValue = e.target.value;
@@ -37,8 +67,25 @@ const ListEquipments = () => {
     }
   };
 
+  const handleSetTeamFilter = (id_team: number) => {
+    setTeam(id_team);
+  };
+
   return (
     <section className={styles.list_system}>
+      <ul className={styles.equipment_filters}>
+        {teams.map(({ id_team, team_name }) => (
+          <li
+            onClick={() => handleSetTeamFilter(id_team)}
+            className={`animate__animated animate__fadeInLeft animate__faster ${
+              id_team === equipmentState.team ? styles.active : ""
+            }`}
+            key={id_team}
+          >
+            {team_name}
+          </li>
+        ))}
+      </ul>
       <div className={styles.system_actions}>
         <div className={styles.input_search}>
           <p>Listado de Parque automotor</p>

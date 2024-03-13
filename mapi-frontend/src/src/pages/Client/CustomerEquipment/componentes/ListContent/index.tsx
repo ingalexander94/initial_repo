@@ -14,13 +14,19 @@ const ListContentTables = () => {
     useContext(EquipmentContext);
 
   useEffect(() => {
-    getUserTeams(page, equipmentState.search);
+    if (equipmentState.team > 0) {
+      getUserTeams(page, equipmentState.search, equipmentState.team);
+    }
     return () => {};
-  }, [page, equipmentState.search]);
+  }, [page, equipmentState.search, equipmentState.team]);
 
-  const getUserTeams = async (currentPage: number, search: string) => {
+  const getUserTeams = async (
+    currentPage: number,
+    search: string,
+    team: number
+  ) => {
     const res = await callEndpoint(
-      EquipmentService.getByPage(currentPage, search)
+      EquipmentService.getByPage(currentPage, search, team)
     );
     if (res) {
       const { data } = res.data;

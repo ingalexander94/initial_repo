@@ -6,6 +6,7 @@ import { Equipment, EquipmentState } from "src/interfaces";
 const INITIAL_STATE: EquipmentState = {
   equipments: [],
   search: "",
+  team: 0,
   totalPages: 1,
 };
 
@@ -31,6 +32,10 @@ export const EquipmentProvider = ({ children }: Props) => {
     dispatch({ type: "setTotalPages", payload: totalPages });
   };
 
+  const setTeam = (id_team: number) => {
+    dispatch({ type: "setTeam", payload: id_team });
+  };
+
   return (
     <EquipmentContext.Provider
       value={{
@@ -38,6 +43,7 @@ export const EquipmentProvider = ({ children }: Props) => {
         setEquipments,
         setSearch,
         setTotalPages,
+        setTeam,
       }}
     >
       {children}

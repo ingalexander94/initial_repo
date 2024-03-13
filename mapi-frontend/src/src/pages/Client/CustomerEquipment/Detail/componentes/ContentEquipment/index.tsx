@@ -1,22 +1,21 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { privateRoutes } from "src/models";
+import { EquipmentData, EquipmentPhotos } from "src/interfaces";
 import CopyToClipboardButton from "../CopyButtons";
-import cart from "src/assets/cartimg.png";
+import Gallery from "src/components/UI/Gallery";
 import photo from "src/assets/icons/photo.svg";
 import edit from "src/assets/icons/edit.svg";
 import arrow from "src/assets/icons/arrow-down.svg";
 import styles from "./detail.module.css";
-import Gallery from "src/components/UI/Gallery";
+import { formatDate } from "src/utilities";
 
-const DetailEquipments = () => {
-  const initialImages = [
-    cart,
-    "https://i.ytimg.com/vi/k3--D5q-zls/maxresdefault.jpg",
-    "https://sigelmanassociates.com/wp-content/uploads/2022/04/California-Commercial-Truck-Axle-Weight-Limits-2022.jpg",
-    "https://carga.com.co/wp-content/uploads/2021/09/DSC_0811.jpg",
-  ];
-  const [smallImages, __] = useState(initialImages);
+type Props = {
+  details: EquipmentData;
+};
+
+const DetailEquipments = ({ details }: Props) => {
+  const [smallImages, __] = useState<EquipmentPhotos[]>(details.photos);
   const photosRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
 
@@ -37,106 +36,44 @@ const DetailEquipments = () => {
               <div className={styles.gallery_image}>
                 <img
                   onClick={() => setCurrentIndex(0)}
-                  src={smallImages[0]}
+                  src={smallImages[0].tp_photo}
                   alt="Car image"
                 />
               </div>
-              <div ref={photosRef} className={styles.small_images}>
-                {smallImages.map((image, index) => (
-                  <img
-                    onClick={() => setCurrentIndex(index)}
-                    key={index}
-                    src={image}
-                    alt={`Photo car ${index}`}
-                  />
-                ))}
-              </div>
-              <div className={styles.buttons_container}>
-                <button
-                  onClick={() => handleMoveSlider(-200)}
-                  className={styles.button_galery}
-                >
-                  <img src={arrow} alt="Arrow icon" />
-                </button>
-                <button
-                  onClick={() => handleMoveSlider(+200)}
-                  className={styles.button_galery}
-                >
-                  <img src={arrow} alt="Arrow icon" />
-                </button>
-              </div>
+              {details.photos.length > 1 && (
+                <>
+                  <div ref={photosRef} className={styles.small_images}>
+                    {smallImages.map((image, index) => (
+                      <img
+                        onClick={() => setCurrentIndex(index)}
+                        key={index}
+                        src={image.tp_photo}
+                        alt={`Photo car ${index}`}
+                      />
+                    ))}
+                  </div>
+                  <div className={styles.buttons_container}>
+                    <button
+                      onClick={() => handleMoveSlider(-200)}
+                      className={styles.button_galery}
+                    >
+                      <img src={arrow} alt="Arrow icon" />
+                    </button>
+                    <button
+                      onClick={() => handleMoveSlider(+200)}
+                      className={styles.button_galery}
+                    >
+                      <img src={arrow} alt="Arrow icon" />
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className={styles.container_mantenimient}>
               <h2> Próximos mantenimientos</h2>
               <ul className={styles.options}>
-                <li>
-                  <span>3,000 Km</span>
-                  <span>Engrase</span>
-                  <span>44 Minutos</span>
-                  <span>$44.000</span>
-                </li>
-                <li>
-                  <span>6,000 Km</span>
-                  <span> Engrase</span>
-                  <span>44 Minutos</span>
-                  <span>$44.000</span>
-                </li>
-
-                <li>
-                  <span>9,000 Km</span>
-                  <span> Engrase</span>
-                  <span>44 Minutos</span>
-                  <span>$44.000</span>
-                </li>
-                <li>
-                  <span>10,000 Km</span>
-                  <span> MCK1</span>
-                  <span>72 Minutos</span>
-                  <span>$72.000</span>
-                </li>
-                <li>
-                  <span>12,000 Km</span>
-                  <span> MCK1</span>
-                  <span>Engrase</span>
-                  <span>$44.000</span>
-                </li>
-                <li>
-                  <span>12,000 Km</span>
-                  <span> MCK1</span>
-                  <span>Engrase</span>
-                  <span>$44.000</span>
-                </li>
-                <li>
-                  <span>15,000 Km</span>
-                  <span> MCK1</span>
-                  <span>Engrase</span>
-                  <span>$44.000</span>
-                </li>
-                <li>
-                  <span>20,000 Km</span>
-                  <span> MCK1 + MPK1</span>
-                  <span>218 Minutos</span>
-                  <span>$218.000</span>
-                </li>
-                <li>
-                  <span>20,000 Km</span>
-                  <span> MCK1 + MPK1</span>
-                  <span>218 Minutos</span>
-                  <span>$218.000</span>
-                </li>
-                <li>
-                  <span>20,000 Km</span>
-                  <span> MCK1 + MPK1</span>
-                  <span>218 Minutos</span>
-                  <span>$218.000</span>
-                </li>
-                <li>
-                  <span>20,000 Km</span>
-                  <span> MCK1 + MPK1</span>
-                  <span>218 Minutos</span>
-                  <span>$218.000</span>
-                </li>
+                <p>No se encontrarón resultados</p>
               </ul>
             </div>
           </div>
@@ -144,8 +81,12 @@ const DetailEquipments = () => {
           <div className={styles.content_description}>
             <div className={styles.content_title}>
               <div>
-                <p>Kenworth - T800</p>
-                <h2>Tractocamión - WOM-361</h2>
+                <p>
+                  {details.brand_name} - {details.model_name}
+                </p>
+                <h2>
+                  {details.team_name} - {details.ut_car_plate}
+                </h2>
               </div>
               <Link
                 to={`/${privateRoutes.CLIENT}/${privateRoutes.EQUIPMENT}/${privateRoutes.EDITEQUIPMENT}`}
@@ -157,18 +98,18 @@ const DetailEquipments = () => {
             </div>
             <div className={styles.container_date}>
               <strong>Fecha de compra:</strong>
-              <span>DD/MM/AAAA</span>
+              <span>{formatDate(details.ut_date_purchased)}</span>
               <div className={styles.bar}></div>
               <strong>Año:</strong>
-              <span>2021</span>
+              <span>{details.ut_year}</span>
               <div className={styles.bar}></div>
               <strong>Aplicación:</strong>
-              <span>Tractocamión</span>
+              <span>{details.ut_application}</span>
             </div>
             <div className={styles.container_detail_driver}>
               <div className={styles.property_cart}>
                 <div>
-                  <strong>WOM-371</strong>
+                  <strong>{details.ut_car_plate}</strong>
                   <span>Placa</span>
                 </div>
                 <div className={styles.bar}></div>
@@ -185,11 +126,13 @@ const DetailEquipments = () => {
               <div className={styles.property_driver}>
                 <img src={photo} alt="Photo conductor" />
                 <div>
-                  <h2>Nombre del conductor</h2>
+                  <h2>
+                    {details.personal_names} {details.personal_surnames}
+                  </h2>
                   <div>
                     <p>
                       Contacto
-                      <CopyToClipboardButton text="330 333 4444" />
+                      <CopyToClipboardButton text={details.personal_phone} />
                     </p>
                   </div>
                 </div>
@@ -205,40 +148,44 @@ const DetailEquipments = () => {
                     <li>
                       <strong>Fecha de compra</strong>
                       <span>
-                        <CopyToClipboardButton text=" DD/MM/AAAA" />
+                        <CopyToClipboardButton
+                          text={formatDate(details.ut_date_purchased)}
+                        />
                       </span>
                     </li>
                     <li>
                       <strong>Marca</strong>
                       <span>
-                        <CopyToClipboardButton text=" Kenworth" />
+                        <CopyToClipboardButton text={details.brand_name} />
                       </span>
                     </li>
                     <li>
                       <strong>Modelo</strong>
                       <span>
-                        <CopyToClipboardButton text="   T800" />
+                        <CopyToClipboardButton text={details.model_name} />
                       </span>
                     </li>
                     <li>
                       <strong>Año</strong>
                       <span>
-                        <CopyToClipboardButton text="  2021" />
+                        <CopyToClipboardButton
+                          text={details.ut_year.toString()}
+                        />
                       </span>
                     </li>
                     <li>
                       <strong>Placa</strong>
-                      <CopyToClipboardButton text="WOM-371" />
+                      <CopyToClipboardButton text={details.ut_car_plate} />
                     </li>
                     <li>
                       <strong>VIN</strong>
 
-                      <CopyToClipboardButton text="3WKDD40XXMF728346" />
+                      <CopyToClipboardButton text={details.ut_vin} />
                     </li>
                     <li>
                       <strong>Aplicación</strong>
 
-                      <CopyToClipboardButton text=" Tractocamión" />
+                      <CopyToClipboardButton text={details.ut_application} />
                     </li>
                   </ul>
                 </div>
@@ -250,55 +197,95 @@ const DetailEquipments = () => {
                     <li>
                       <strong>Marca</strong>
                       <span>
-                        <CopyToClipboardButton text=" Cummins" />
+                        <CopyToClipboardButton
+                          text={details.engine_brand ?? "Sin especificar"}
+                        />
                       </span>
                     </li>
                     <li>
                       <strong>Modelo</strong>
                       <span>
-                        <CopyToClipboardButton text=" X15" />
+                        <CopyToClipboardButton
+                          text={details.engine_model ?? "Sin especificar"}
+                        />
                       </span>
                     </li>
                     <li>
                       <strong>Cilindraje</strong>
                       <span>
-                        <CopyToClipboardButton text=" 15 litros" />
+                        <CopyToClipboardButton
+                          text={
+                            details.engine_cylinder_capacity
+                              ? `${details.engine_cylinder_capacity} Litros`
+                              : "Sin especificar"
+                          }
+                        />
                       </span>
                     </li>
                     <li>
                       <strong>Serial</strong>
                       <span>
-                        <CopyToClipboardButton text=" 80256582" />
+                        <CopyToClipboardButton
+                          text={details.engine_serial ?? "Sin especificar"}
+                        />
                       </span>
                     </li>
                     <li>
                       <strong>Potencia indicada</strong>
-                      <CopyToClipboardButton text="450 H.P" />
+                      <CopyToClipboardButton
+                        text={
+                          details.engine_power
+                            ? `${details.engine_power} H.P`
+                            : "Sin especificar"
+                        }
+                      />
                     </li>
                     <li>
                       <strong>RPM de potencia indicada</strong>
 
-                      <CopyToClipboardButton text="1800 RPM" />
+                      <CopyToClipboardButton
+                        text={
+                          details.engine_rpm_power
+                            ? `${details.engine_rpm_power} RPM`
+                            : "Sin especificar"
+                        }
+                      />
                     </li>
                     <li>
                       <strong>Torque</strong>
 
-                      <CopyToClipboardButton text=" 1650 Lb.pie" />
+                      <CopyToClipboardButton
+                        text={
+                          details.engine_torque
+                            ? `${details.engine_torque} Lb.pie`
+                            : "Sin especificar"
+                        }
+                      />
                     </li>
                     <li>
                       <strong>Velocidad gobernada</strong>
 
-                      <CopyToClipboardButton text=" 1800 RPM" />
+                      <CopyToClipboardButton
+                        text={
+                          details.engine_governed_speed
+                            ? `${details.engine_governed_speed} RPM`
+                            : "Sin especificar"
+                        }
+                      />
                     </li>
                     <li>
                       <strong>Código del ECM</strong>
 
-                      <CopyToClipboardButton text=" DS10117,07" />
+                      <CopyToClipboardButton
+                        text={details.engine_ecm_code ?? "Sin especificar"}
+                      />
                     </li>
                     <li>
                       <strong>Nombre del ECM</strong>
 
-                      <CopyToClipboardButton text=" CM2250" />
+                      <CopyToClipboardButton
+                        text={details.engine_ecm_name ?? "Sin especificar"}
+                      />
                     </li>
                   </ul>
                 </div>
@@ -312,7 +299,7 @@ const DetailEquipments = () => {
         <Gallery
           onClose={() => setCurrentIndex(-1)}
           currentIndex={currentIndex}
-          photos={initialImages}
+          photos={details.photos}
         />
       )}
     </>

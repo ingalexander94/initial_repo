@@ -8,11 +8,23 @@ export class EquipmentService {
 
   private constructor() {}
 
-  static getByPage(page: number, search: string = "") {
+  static getTeams() {
+    const controller = loadAbort();
+    return {
+      call: axios.get(`${this.API_URL}/${EquipmentEndpoints.teams}`, {
+        headers: {
+          Authorization: `Bearer ${CustomStorage.token}`,
+        },
+      }),
+      controller,
+    };
+  }
+
+  static getByPage(page: number, search: string = "", team: number = 0) {
     const controller = loadAbort();
     return {
       call: axios.get(
-        `${this.API_URL}/${EquipmentEndpoints.listUserTeams}?page=${page}&search=${search}`,
+        `${this.API_URL}/${EquipmentEndpoints.listUserTeams}?page=${page}&search=${search}&team=${team}`,
         {
           headers: {
             Authorization: `Bearer ${CustomStorage.token}`,
@@ -31,6 +43,21 @@ export class EquipmentService {
           Authorization: `Bearer ${CustomStorage.token}`,
         },
       }),
+      controller,
+    };
+  }
+
+  static getDetail(id_user_team: string) {
+    const controller = loadAbort();
+    return {
+      call: axios.get(
+        `${this.API_URL}/${EquipmentEndpoints.detailUserTeam}/${id_user_team}`,
+        {
+          headers: {
+            Authorization: `Bearer ${CustomStorage.token}`,
+          },
+        }
+      ),
       controller,
     };
   }

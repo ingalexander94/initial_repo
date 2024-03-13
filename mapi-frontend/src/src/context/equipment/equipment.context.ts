@@ -6,6 +6,7 @@ export type EquipmentContextProps = {
   setSearch: (search: string) => void;
   setEquipments: (equipment: Equipment[]) => void;
   setTotalPages: (totalPages: number) => void;
+  setTeam: (id_team: number) => void;
 };
 
 export const EquipmentContext = createContext<EquipmentContextProps>(

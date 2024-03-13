@@ -6,6 +6,7 @@ class UserTeamsRouter {
   static get routes() {
     const router = Router();
     router.use(AuthMiddleware.validateJWT);
+    router.get("/teams", UserTeamsController.getTeams);
     router.get("/listUserTeams", UserTeamsController.getListTeams);
     router.get("/detailUserTeam/:id", UserTeamsController.getDetailUserTeam);
     router.get("/download", UserTeamsController.getDownloadData);

@@ -4,6 +4,7 @@ const UserTeamModel = require("../database/models/user_team_model");
 
 class UserTeamsController {
   static limit = 12;
+
   static #handleError = (error, res = response) => {
     if (error instanceof CustomError) {
       return res
@@ -16,22 +17,39 @@ class UserTeamsController {
       .json({ status: false, data: null, error: "Internal Server Error" });
   };
 
-  static getListTeams = async (req = request, res = response) => {
+  static getTeams = async (req = request, res = response) => {
     try {
-      const orderBy = req.query.orderBy || "DESC";
-      const search = req.query.search;
-      const page = parseInt(req.query.page) || 1;
-      const offset = (page - 1) * this.limit;
       const dbConnection = req.clientConnection;
       const userTeamModel = new UserTeamModel(dbConnection);
+      const teams = await userTeamModel.getTeams();
+      return res.status(200).json({
+        status: true,
+        data: teams,
+        error: null,
+      });
+    } catch (error) {
+      this.#handleError(error, res);
+    }
+  };
+
+  static getListTeams = async (req = request, res = response) => {
+    try {
+      const search = req.query.search;
+      const page = parseInt(req.query.page) || 1;
       let totalPages = 1;
       let equipments = [];
-      if (search) {
-        equipments = await userTeamModel.searchByCarPlate(search);
-      } else {
-        equipments = await userTeamModel.listTeams(this.limit, offset, orderBy);
-        const { total } = await userTeamModel.getTotalListUserTeam();
-        totalPages = Math.ceil(total / this.limit);
+      const team = req.query.team;
+      if (team) {
+        const offset = (page - 1) * this.limit;
+        const dbConnection = req.clientConnection;
+        const userTeamModel = new UserTeamModel(dbConnection);
+        if (search) {
+          equipments = await userTeamModel.searchByCarPlate(search, team);
+        } else {
+          equipments = await userTeamModel.listTeams(this.limit, offset, team);
+          const { total } = await userTeamModel.getTotalListUserTeam();
+          totalPages = Math.ceil(total / this.limit);
+        }
       }
       return res.status(200).json({
         status: true,
@@ -46,13 +64,14 @@ class UserTeamsController {
   static getDetailUserTeam = async (req = request, res = response) => {
     try {
       const { id } = req.params;
-      const details = await UserTeamModel.detailsUserTeam(id);
-      const photos = await UserTeamModel.photos();
-
+      const dbConnection = req.clientConnection;
+      const userTeamModel = new UserTeamModel(dbConnection);
+      const equipment = await userTeamModel.getDetailsUserTeam(id);
+      if (!equipment) throw CustomError.badRequest("El equipo no existe");
+      const photos = await userTeamModel.getPhotos(id);
       return res.status(200).json({
         status: true,
-        data: details,
-        photos,
+        data: { ...equipment, photos },
         error: null,
       });
     } catch (error) {

@@ -19,6 +19,13 @@ export const formatCurrency = (value: number) => {
   return formatter.format(value);
 };
 
+export const formatDate = (date: string) => {
+  const dateFormat = new Date(date);
+  return `${dateFormat.getDate()}/${
+    dateFormat.getMonth() + 1
+  }/${dateFormat.getFullYear()}`;
+};
+
 export const calculateHours = (time: string) => {
   const partials = time.split(":");
   const hours = parseInt(partials[0]);

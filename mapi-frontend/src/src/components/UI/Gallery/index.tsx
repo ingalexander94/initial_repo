@@ -2,9 +2,10 @@ import { useRef, useState } from "react";
 import arrow from "src/assets/icons/arrow.svg";
 import close from "src/assETS/icons/x.svg";
 import styles from "./gallery.module.css";
+import { EquipmentPhotos } from "src/interfaces";
 
 type Props = {
-  photos: string[];
+  photos: EquipmentPhotos[];
   currentIndex: number;
   onClose: () => void;
 };
@@ -42,7 +43,7 @@ const Gallery = ({ photos, onClose, currentIndex }: Props) => {
         <img src={arrow} alt="icon arrow" />
       </button>
       <div>
-        <img src={photos[index]} loading="lazy" alt="Photo active" />
+        <img src={photos[index].tp_photo} loading="lazy" alt="Photo active" />
         <button className={styles.close} onClick={handleClose}>
           <img src={close} alt="Close icon" />
         </button>

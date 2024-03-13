@@ -15,6 +15,7 @@ section.list_system ul.equipment_filters li {
   font-style: normal;
   font-weight: 400;
   line-height: 16px;
+  cursor: pointer;
 }
 
 section.list_system ul.equipment_filters li.active {

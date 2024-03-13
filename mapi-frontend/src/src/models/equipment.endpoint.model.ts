@@ -6,4 +6,12 @@ export class EquipmentEndpoints {
   static get download() {
     return "download";
   }
+
+  static get teams() {
+    return "teams";
+  }
+
+  static get detailUserTeam() {
+    return "detailUserTeam";
+  }
 }

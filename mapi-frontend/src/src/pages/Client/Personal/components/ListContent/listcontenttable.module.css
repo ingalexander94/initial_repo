@@ -182,6 +182,6 @@ div.buttons button:nth-child(2) {
     padding-right: 10px;
   }
   div.table_system ul {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 75px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 150px 75px;
   }
 }

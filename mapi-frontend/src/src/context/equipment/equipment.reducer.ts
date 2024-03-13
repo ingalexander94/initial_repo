@@ -3,7 +3,8 @@ import { Equipment, EquipmentState } from "src/interfaces";
 type EquipmentAction =
   | { type: "setEquipments"; payload: Equipment[] }
   | { type: "setSearch"; payload: string }
-  | { type: "setTotalPages"; payload: number };
+  | { type: "setTotalPages"; payload: number }
+  | { type: "setTeam"; payload: number };
 
 export const equipmentReducer = (
   state: EquipmentState,
@@ -24,6 +25,11 @@ export const equipmentReducer = (
       return {
         ...state,
         totalPages: action.payload,
+      };
+    case "setTeam":
+      return {
+        ...state,
+        team: action.payload,
       };
 
     default:
